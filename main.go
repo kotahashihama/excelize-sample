@@ -13,7 +13,7 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
-const sheet = "Sheet1"
+const sheet = "Sheet1" // Sheet1 しか使わないので定数化
 
 func main() {
 	err := godotenv.Load()
@@ -22,9 +22,52 @@ func main() {
 	}
 
 	// ここをコメントイン・コメントアウトしながら go run main.go して確認
+	// updateMasterExcelFile()
 	// createExtractedExcelFile()
-	createMasterExcelFile()
+	// createMasterExcelFile()
 	// createHelloWorldExcelFile()
+}
+
+func updateMasterExcelFile() {
+	desktopPath := os.Getenv("ABSOLUTE_PATH_TO_DESKTOP")
+
+	f, err := excelize.OpenFile(os.Getenv("ABSOLUTE_PATH_TO_DESKTOP") + "/master.xlsx")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	defer func() {
+		if err := f.Close(); err != nil {
+			fmt.Println(err)
+			return
+		}
+	}()
+
+	rows, err := f.GetRows(sheet)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	// 行を特定する
+	targetId := "ididid"
+	var rowNum int
+	for i, row := range rows {
+		if row[0] == targetId {
+			rowNum = i + 1 // NOTE: 1行目は見出しなので、+1 する
+			break
+		}
+	}
+
+	// 「テキスト1」カラムを書き換える bar -> yahoo
+	// WARNING: カラム名はユーザー任意の値なので、実際はこれで特定するのは避ける
+	f.SetCellValue(sheet, fmt.Sprintf("F%d", rowNum), "yahoo")
+
+	if err := f.SaveAs(fmt.Sprintf("%s/master.xlsx", desktopPath)); err != nil {
+		fmt.Println(err)
+		return
+	}
 }
 
 func createExtractedExcelFile() {
@@ -94,18 +137,6 @@ func createMasterExcelFile() {
 			return
 		}
 	}()
-
-	// 見出し
-	f.SetCellValue(sheet, "A1", "店舗 ID")
-	f.SetCellValue(sheet, "B1", "店舗名")
-	f.SetCellValue(sheet, "C1", "完了日時")
-	f.SetCellValue(sheet, "D1", "更新日時")
-	f.SetCellValue(sheet, "E1", "報告者")
-	f.SetCellValue(sheet, "F1", "テキスト1")
-	f.SetCellValue(sheet, "G1", "テキスト2")
-	f.SetCellValue(sheet, "H1", "画像1")
-	f.SetCellValue(sheet, "I1", "画像2")
-	f.SetCellValue(sheet, "J1", "画像3")
 
 	// 内容1行目
 	f.SetCellValue(sheet, "A2", "dididi")
