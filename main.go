@@ -21,8 +21,9 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// ここをコメントイン・コメントアウトしながら go run main.go して確認
 	// createExtractedExcelFile()
-	// createMasterExcelFile()
+	createMasterExcelFile()
 	// createHelloWorldExcelFile()
 }
 
