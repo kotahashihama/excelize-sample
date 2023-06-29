@@ -21,7 +21,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	createExtractedExcelFile()
+	// createExtractedExcelFile()
 	// createMasterExcelFile()
 	// createHelloWorldExcelFile()
 }
@@ -106,8 +106,8 @@ func createMasterExcelFile() {
 	f.SetCellValue(sheet, "I1", "画像2")
 	f.SetCellValue(sheet, "J1", "画像3")
 
-	// 内容
-	f.SetCellValue(sheet, "A2", "ididid")
+	// 内容1行目
+	f.SetCellValue(sheet, "A2", "dididi")
 	f.SetCellValue(sheet, "B2", "hoge")
 	f.SetCellValue(sheet, "C2", "fuga")
 	f.SetCellValue(sheet, "D2", "piyo")
@@ -127,6 +127,33 @@ func createMasterExcelFile() {
 		return
 	}
 	if err := f.AddPicture(sheet, "J2", fmt.Sprintf("%s/image.png", desktopPath), &excelize.GraphicOptions{
+		AutoFit: true,
+	}); err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	// 内容2行目
+	f.SetCellValue(sheet, "A3", "ididid")
+	f.SetCellValue(sheet, "B3", "hoge")
+	f.SetCellValue(sheet, "C3", "fuga")
+	f.SetCellValue(sheet, "D3", "piyo")
+	f.SetCellValue(sheet, "E3", "foo")
+	f.SetCellValue(sheet, "F3", "bar")
+	f.SetCellValue(sheet, "G3", "baz")
+	if err := f.AddPicture(sheet, "H3", fmt.Sprintf("%s/image.png", desktopPath), &excelize.GraphicOptions{
+		AutoFit: true,
+	}); err != nil {
+		fmt.Println(err)
+		return
+	}
+	if err := f.AddPicture(sheet, "I3", fmt.Sprintf("%s/image.png", desktopPath), &excelize.GraphicOptions{
+		AutoFit: true,
+	}); err != nil {
+		fmt.Println(err)
+		return
+	}
+	if err := f.AddPicture(sheet, "J3", fmt.Sprintf("%s/image.png", desktopPath), &excelize.GraphicOptions{
 		AutoFit: true,
 	}); err != nil {
 		fmt.Println(err)
