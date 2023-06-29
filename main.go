@@ -31,6 +31,7 @@ func main() {
 	// createHelloWorldExcelFile()
 }
 
+// 画像がふんだんに使用されたファイルを作成
 func createImageFullExcelFile() {
 	f := excelize.NewFile()
 	desktopPath := os.Getenv("ABSOLUTE_PATH_TO_DESKTOP")
@@ -79,6 +80,7 @@ func createImageFullExcelFile() {
 	}
 }
 
+// テキストのみだが大きいファイルを作成
 func createTextOnlyButHugeExcelFile() {
 	f := excelize.NewFile()
 	desktopPath := os.Getenv("ABSOLUTE_PATH_TO_DESKTOP")
@@ -118,6 +120,7 @@ func createTextOnlyButHugeExcelFile() {
 	}
 }
 
+// マスターファイルを更新
 func updateMasterExcelFile() {
 	desktopPath := os.Getenv("ABSOLUTE_PATH_TO_DESKTOP")
 
@@ -160,6 +163,7 @@ func updateMasterExcelFile() {
 	}
 }
 
+// マスターファイルから抽出して、別ファイルに書き出す
 func createExtractedExcelFile() {
 	f := excelize.NewFile()
 	desktopPath := os.Getenv("ABSOLUTE_PATH_TO_DESKTOP")
