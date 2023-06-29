@@ -21,10 +21,67 @@ func main() {
 		log.Fatal(err)
 	}
 
-	createMasterExcelFile()
+	createExtractedExcelFile()
+	// createMasterExcelFile()
 	// createHelloWorldExcelFile()
 }
 
+func createExtractedExcelFile() {
+	f := excelize.NewFile()
+	desktopPath := os.Getenv("ABSOLUTE_PATH_TO_DESKTOP")
+
+	defer func() {
+		if err := f.Close(); err != nil {
+			fmt.Println(err)
+			return
+		}
+	}()
+
+	// 見出し
+	f.SetCellValue(sheet, "A1", "店舗名")
+	f.SetCellValue(sheet, "B1", "完了日時")
+	f.SetCellValue(sheet, "C1", "更新日時")
+	f.SetCellValue(sheet, "D1", "報告者")
+	f.SetCellValue(sheet, "E1", "テキスト1")
+	f.SetCellValue(sheet, "F1", "テキスト2")
+	f.SetCellValue(sheet, "G1", "画像1")
+	f.SetCellValue(sheet, "H1", "画像2")
+	f.SetCellValue(sheet, "I1", "画像3")
+
+	// マスターファイルを開く
+	masterFile, err := excelize.OpenFile(fmt.Sprintf("%s/master.xlsx", desktopPath))
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	// マスターファイルから画像を取得
+	pics, err := masterFile.GetPictures(sheet, "G2")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	// 抽出先ファイルへ画像を挿入
+	if err := f.AddPictureFromBytes(sheet, "G2", &excelize.Picture{
+		Extension: pics[0].Extension,
+		File:      pics[0].File,
+		Format: &excelize.GraphicOptions{
+			AutoFit: true, // NOTE: 抽出元から引き継がれないので、あらためて指定
+		},
+	}); err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	// 抽出先ファイルを保存
+	if err := f.SaveAs(fmt.Sprintf("%s/extracted.xlsx", desktopPath)); err != nil {
+		fmt.Println(err)
+		return
+	}
+}
+
+// マスターファイルを作成
 func createMasterExcelFile() {
 	f := excelize.NewFile()
 	desktopPath := os.Getenv("ABSOLUTE_PATH_TO_DESKTOP")
@@ -49,11 +106,11 @@ func createMasterExcelFile() {
 
 	// 内容
 	f.SetCellValue(sheet, "A2", "hoge")
-	f.SetCellValue(sheet, "B2", "hoge")
-	f.SetCellValue(sheet, "C2", "hoge")
-	f.SetCellValue(sheet, "D2", "hoge")
-	f.SetCellValue(sheet, "E2", "hoge")
-	f.SetCellValue(sheet, "F2", "hoge")
+	f.SetCellValue(sheet, "B2", "fuga")
+	f.SetCellValue(sheet, "C2", "piyo")
+	f.SetCellValue(sheet, "D2", "foo")
+	f.SetCellValue(sheet, "E2", "bar")
+	f.SetCellValue(sheet, "F2", "baz")
 	if err := f.AddPicture(sheet, "G2", fmt.Sprintf("%s/image.png", desktopPath), &excelize.GraphicOptions{
 		AutoFit: true,
 	}); err != nil {
@@ -80,6 +137,7 @@ func createMasterExcelFile() {
 	}
 }
 
+// 使い方を確認するためのサンプル
 func createHelloWorldExcelFile() {
 	f := excelize.NewFile()
 
