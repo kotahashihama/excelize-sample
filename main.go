@@ -38,15 +38,16 @@ func createExtractedExcelFile() {
 	}()
 
 	// 見出し
-	f.SetCellValue(sheet, "A1", "店舗名")
-	f.SetCellValue(sheet, "B1", "完了日時")
-	f.SetCellValue(sheet, "C1", "更新日時")
-	f.SetCellValue(sheet, "D1", "報告者")
-	f.SetCellValue(sheet, "E1", "テキスト1")
-	f.SetCellValue(sheet, "F1", "テキスト2")
-	f.SetCellValue(sheet, "G1", "画像1")
-	f.SetCellValue(sheet, "H1", "画像2")
-	f.SetCellValue(sheet, "I1", "画像3")
+	f.SetCellValue(sheet, "A1", "店舗 ID")
+	f.SetCellValue(sheet, "B1", "店舗名")
+	f.SetCellValue(sheet, "C1", "完了日時")
+	f.SetCellValue(sheet, "D1", "更新日時")
+	f.SetCellValue(sheet, "E1", "報告者")
+	f.SetCellValue(sheet, "F1", "テキスト1")
+	f.SetCellValue(sheet, "G1", "テキスト2")
+	f.SetCellValue(sheet, "H1", "画像1")
+	f.SetCellValue(sheet, "I1", "画像2")
+	f.SetCellValue(sheet, "J1", "画像3")
 
 	// マスターファイルを開く
 	masterFile, err := excelize.OpenFile(fmt.Sprintf("%s/master.xlsx", desktopPath))
@@ -56,14 +57,14 @@ func createExtractedExcelFile() {
 	}
 
 	// マスターファイルから画像を取得
-	pics, err := masterFile.GetPictures(sheet, "G2")
+	pics, err := masterFile.GetPictures(sheet, "H2")
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
 	// 抽出先ファイルへ画像を挿入
-	if err := f.AddPictureFromBytes(sheet, "G2", &excelize.Picture{
+	if err := f.AddPictureFromBytes(sheet, "H2", &excelize.Picture{
 		Extension: pics[0].Extension,
 		File:      pics[0].File,
 		Format: &excelize.GraphicOptions{
@@ -94,29 +95,25 @@ func createMasterExcelFile() {
 	}()
 
 	// 見出し
-	f.SetCellValue(sheet, "A1", "店舗名")
-	f.SetCellValue(sheet, "B1", "完了日時")
-	f.SetCellValue(sheet, "C1", "更新日時")
-	f.SetCellValue(sheet, "D1", "報告者")
-	f.SetCellValue(sheet, "E1", "テキスト1")
-	f.SetCellValue(sheet, "F1", "テキスト2")
-	f.SetCellValue(sheet, "G1", "画像1")
-	f.SetCellValue(sheet, "H1", "画像2")
-	f.SetCellValue(sheet, "I1", "画像3")
+	f.SetCellValue(sheet, "A1", "店舗 ID")
+	f.SetCellValue(sheet, "B1", "店舗名")
+	f.SetCellValue(sheet, "C1", "完了日時")
+	f.SetCellValue(sheet, "D1", "更新日時")
+	f.SetCellValue(sheet, "E1", "報告者")
+	f.SetCellValue(sheet, "F1", "テキスト1")
+	f.SetCellValue(sheet, "G1", "テキスト2")
+	f.SetCellValue(sheet, "H1", "画像1")
+	f.SetCellValue(sheet, "I1", "画像2")
+	f.SetCellValue(sheet, "J1", "画像3")
 
 	// 内容
-	f.SetCellValue(sheet, "A2", "hoge")
-	f.SetCellValue(sheet, "B2", "fuga")
-	f.SetCellValue(sheet, "C2", "piyo")
-	f.SetCellValue(sheet, "D2", "foo")
-	f.SetCellValue(sheet, "E2", "bar")
-	f.SetCellValue(sheet, "F2", "baz")
-	if err := f.AddPicture(sheet, "G2", fmt.Sprintf("%s/image.png", desktopPath), &excelize.GraphicOptions{
-		AutoFit: true,
-	}); err != nil {
-		fmt.Println(err)
-		return
-	}
+	f.SetCellValue(sheet, "A2", "ididid")
+	f.SetCellValue(sheet, "B2", "hoge")
+	f.SetCellValue(sheet, "C2", "fuga")
+	f.SetCellValue(sheet, "D2", "piyo")
+	f.SetCellValue(sheet, "E2", "foo")
+	f.SetCellValue(sheet, "F2", "bar")
+	f.SetCellValue(sheet, "G2", "baz")
 	if err := f.AddPicture(sheet, "H2", fmt.Sprintf("%s/image.png", desktopPath), &excelize.GraphicOptions{
 		AutoFit: true,
 	}); err != nil {
@@ -124,6 +121,12 @@ func createMasterExcelFile() {
 		return
 	}
 	if err := f.AddPicture(sheet, "I2", fmt.Sprintf("%s/image.png", desktopPath), &excelize.GraphicOptions{
+		AutoFit: true,
+	}); err != nil {
+		fmt.Println(err)
+		return
+	}
+	if err := f.AddPicture(sheet, "J2", fmt.Sprintf("%s/image.png", desktopPath), &excelize.GraphicOptions{
 		AutoFit: true,
 	}); err != nil {
 		fmt.Println(err)
