@@ -23,11 +23,60 @@ func main() {
 	}
 
 	// ここをコメントイン・コメントアウトしながら go run main.go して確認
-	createTextOnlyButHugeExcelFile()
+	createImageFullExcelFile()
+	// createTextOnlyButHugeExcelFile()
 	// updateMasterExcelFile()
 	// createExtractedExcelFile()
 	// createMasterExcelFile()
 	// createHelloWorldExcelFile()
+}
+
+func createImageFullExcelFile() {
+	f := excelize.NewFile()
+	desktopPath := os.Getenv("ABSOLUTE_PATH_TO_DESKTOP")
+
+	defer func() {
+		if err := f.Close(); err != nil {
+			fmt.Println(err)
+			return
+		}
+	}()
+
+	// 見出し
+	f.SetCellValue(sheet, "A1", "店舗 ID")
+	f.SetCellValue(sheet, "B1", "店舗名")
+	f.SetCellValue(sheet, "C1", "完了日時")
+	f.SetCellValue(sheet, "D1", "更新日時")
+	f.SetCellValue(sheet, "E1", "報告者")
+	f.SetCellValue(sheet, "F1", "画像1")
+	f.SetCellValue(sheet, "G1", "画像2")
+	f.SetCellValue(sheet, "H1", "画像3")
+	f.SetCellValue(sheet, "I1", "画像4")
+	f.SetCellValue(sheet, "J1", "画像5")
+
+	// 内容
+	rowCount := 22000
+	textColPrefixes := []string{"A", "B", "C", "D", "E"}
+	imageColPrefixes := []string{"F", "G", "H", "I", "J"}
+	for i := 2; i < rowCount; i++ {
+		for _, p := range textColPrefixes {
+			f.SetCellValue(sheet, fmt.Sprintf("%s%d", p, i), "hoge")
+		}
+
+		for _, p := range imageColPrefixes {
+			if err := f.AddPicture(sheet, fmt.Sprintf("%s%d", p, i), fmt.Sprintf("%s/image.png", desktopPath), &excelize.GraphicOptions{
+				AutoFit: true,
+			}); err != nil {
+				fmt.Println(err)
+				return
+			}
+		}
+	}
+
+	if err := f.SaveAs(fmt.Sprintf("%s/image_full.xlsx", desktopPath)); err != nil {
+		fmt.Println(err)
+		return
+	}
 }
 
 func createTextOnlyButHugeExcelFile() {
@@ -58,8 +107,8 @@ func createTextOnlyButHugeExcelFile() {
 	loopedChar := "a"
 	colPrefixes := []string{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"}
 	for i := 2; i < rowCount; i++ {
-		for _, c := range colPrefixes {
-			f.SetCellValue(sheet, fmt.Sprintf("%s%d", c, i), strings.Repeat(loopedChar, 10000))
+		for _, p := range colPrefixes {
+			f.SetCellValue(sheet, fmt.Sprintf("%s%d", p, i), strings.Repeat(loopedChar, 10000))
 		}
 	}
 
