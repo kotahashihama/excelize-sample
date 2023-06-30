@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
+	"net/http"
 	"os"
 	"strings"
 
@@ -23,12 +25,64 @@ func main() {
 	}
 
 	// ここをコメントイン・コメントアウトしながら go run main.go して確認
-	createImageFullExcelFile()
+	createDownloadedImageExcelFileWith()
+	// createImageFullExcelFile()
 	// createTextOnlyButHugeExcelFile()
 	// updateMasterExcelFile()
 	// createExtractedExcelFile()
 	// createMasterExcelFile()
 	// createHelloWorldExcelFile()
+}
+
+// ダウンロードした画像でファイルを作成
+func createDownloadedImageExcelFileWith() {
+	f := excelize.NewFile()
+	desktopPath := os.Getenv("ABSOLUTE_PATH_TO_DESKTOP")
+
+	defer func() {
+		if err := f.Close(); err != nil {
+			fmt.Println(err)
+			return
+		}
+	}()
+
+	// 見出し
+	f.SetCellValue(sheet, "A1", "ダウンロードした画像")
+
+	// ダウンロード
+	resp, err := http.Get("https://placehold.jp/150x150.png")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	defer resp.Body.Close()
+
+	file, err := os.Create("downloaded/150x150.png")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer file.Close()
+
+	_, err = io.Copy(file, resp.Body)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	// 内容を挿入
+	if err := f.AddPicture(sheet, "A2", "downloaded/150x150.png", &excelize.GraphicOptions{
+		AutoFit: true,
+	}); err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	if err := f.SaveAs(fmt.Sprintf("%s/downloaded_image.xlsx", desktopPath)); err != nil {
+		fmt.Println(err)
+		return
+	}
 }
 
 // 画像がふんだんに使用されたファイルを作成
